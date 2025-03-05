@@ -72,7 +72,7 @@
          1. "Reinige deinen Geist"     (auf der Schriftrolle im Wohnzimmer)
          2. "Öffne dein Herz"           (auf der Rückseite des Amuletts im Schlafzimmer)
          3. "Erhebe deinen Körper"      (auf der Rückseite des Schneidebretts in der Küche)
-         4. "Empfange die Erleuchtung"   (über leises Zuhören am Radio im Wohnzimmer)
+         4. "Empfange die Erleuchtung"   (durch leises Zuhören am Radio im Wohnzimmer)
        Diese Verse werden in discoveredVerses gesammelt, sobald der Spieler sie entdeckt.
     */
     let discoveredVerses = [];
@@ -97,7 +97,7 @@
       });
     }
 
-    // Game-Over-Funktion (Optionale Ergänzung: Bild einblenden)
+    // Game-Over-Funktion
     function gameOver(message) {
       gameState.gameOver = true;
       displayScene(`<p class="warning">${message}</p><p>GAME OVER</p>`, [
@@ -115,18 +115,26 @@
       let narrative = `
         <h2>Schlafzimmer</h2>
         <img src="schlafzimmer.jpg" alt="Schlafzimmer">
-        <p>Du erwachst in deinem Schlafzimmer – alles wirkt vertraut, aber etwas stimmt nicht. Auf dem Nachttisch liegt ein zerknitterter Zettel und daneben ein kunstvoll gestaltetes Amulett. Ein großer Spiegel zeigt verschwommene Bilder einer Menschenmenge am Fluss.</p>
+        <p>Du erwachst in deinem Schlafzimmer – alles wirkt vertraut, aber etwas stimmt nicht. Du fühlst dich unbehaglich verstopft. Auf dem zerknitterten Nachttisch liegen ein einfacher Zettel und ein kunstvoll gestaltetes Amulett. Ein alter Spiegel hängt an der Wand.</p>
       `;
       let options = [
-        { text: "Untersuche den Nachttisch", action: () => { alert("Der Zettel bestätigt die Botschaft."); showSchlafzimmer(); } },
-        { text: "Betrachte den Spiegel", action: () => { alert("Der Spiegel zeigt kurz das Bild eines Rituals am Fluss."); showSchlafzimmer(); } },
+        { text: "Untersuche den Nachttisch", action: () => { 
+            alert("Reingung des Darms ist der erste Schritt zur Erleuchtung. Du verspürst eine drückende Verstopfung."); 
+            showSchlafzimmer(); 
+          } 
+        },
+        { text: "Untersuche den Spiegel", action: showSchlafzimmerSpiegel },
         { text: "Öffne den Kleiderschrank", action: showSchlafzimmerCloset },
         { text: "Untersuche das Amulett", action: showSchlafzimmerAmulett },
         { text: "Zurück in den Hauptflur", action: showFlur }
       ];
       displayScene(narrative, options);
     }
-
+    // Schlafzimmer – Spiegel interagieren
+    function showSchlafzimmerSpiegel() {
+      alert("Im Spiegel erkennst du einen flüchtigen Blick: Eine vage Szene, in der Menschen in ritueller Kleidung an einem Fluss versammelt sind – ein erster Hinweis auf ein altes Ritual.");
+      showSchlafzimmer();
+    }
     // Schlafzimmer – Kleiderschrank (tödliche Option)
     function showSchlafzimmerCloset() {
       let narrative = `
@@ -135,16 +143,15 @@
         <p>Du öffnest den alten Kleiderschrank – plötzlich schwingt sich ein furchterregendes Monster hervor, das dich hineinzerrt und zerfleischt.</p>
       `;
       displayScene(narrative, [
-        { text: "GAME OVER", action: () => gameOver("Das Monster im Kleiderschrank hat dich zerfleischt!") }
+        { text: "GAME OVER", action: () => gameOver("Das Monster im Schrank hat dich zerfleischt!") }
       ]);
     }
-
     // Schlafzimmer – Amulett (mehrstufige Untersuchung)
     function showSchlafzimmerAmulett() {
       let narrative = `
         <h2>Schlafzimmer – Amulett</h2>
         <img src="schlafzimmer.jpg" alt="Amulett">
-        <p>Du hältst ein altes, verzierte Amulett in der Hand. Was möchtest du tun?</p>
+        <p>Du hältst das alte, verzierte Amulett in der Hand. Was möchtest du tun?</p>
       `;
       let options = [
         { text: "Sieh dir die Vorderseite an", action: () => { alert("Die Vorderseite zeigt nur ein unscheinbares Muster."); showSchlafzimmerAmulett(); } },
@@ -157,7 +164,7 @@
       let narrative = `
         <h2>Schlafzimmer – Amulett (Rückseite)</h2>
         <img src="schlafzimmer.jpg" alt="Amulett Rückseite">
-        <p>Auf der Rückseite des Amuletts entdeckst du einen Vers, der andeutet: Öffne dein Herz.</p>
+        <p>Auf der Rückseite des Amuletts entdeckst du den Vers: "Öffne dein Herz".</p>
       `;
       if (!discoveredVerses.includes("Öffne dein Herz")) {
         discoveredVerses.push("Öffne dein Herz");
@@ -175,7 +182,7 @@
         <h2>Hauptflur</h2>
         <img src="hauptflur_haustuer.jpg" alt="Hauptflur und Haustür">
         <p>Du befindest dich in einem langen Flur, von dem aus du zu allen Räumen gelangst: Schlafzimmer, Wohnzimmer, Küche und Badezimmer.
-        Die Haustür ist stets sichtbar – sie bleibt verschlossen, bis du den Schlüssel findest. ${gameState.keyFound ? "(Schlüssel vorhanden!)" : ""}</p>
+        Die Haustür ist stets sichtbar – sie bleibt verschlossen, bis du den Schlüssel findest. ${gameState.keyFound ? " (Schlüssel vorhanden!)" : ""}</p>
       `;
       let options = [
         { text: "Gehe ins Schlafzimmer", action: showSchlafzimmer },
@@ -213,7 +220,7 @@
       ];
       displayScene(narrative, options);
     }
-    // Schriftrolle – Mehrstufige Untersuchung (enthüllt Vers 1)
+    // Wohnzimmer – Schriftrolle (Mehrstufige Untersuchung, enthüllt Vers 1)
     function showSchriftrolle() {
       let narrative = `
         <h2>Wohnzimmer – Schriftrolle</h2>
@@ -231,7 +238,7 @@
       let narrative = `
         <h2>Wohnzimmer – Schriftrolle (Text)</h2>
         <img src="wohnzimmer.jpg" alt="Schriftrolle Text">
-        <p>Die Schriftrolle verkündet mit alter Weisheit: Reinige deinen Geist.</p>
+        <p>Die Schriftrolle verkündet: "Reinige deinen Geist".</p>
       `;
       if (!discoveredVerses.includes("Reinige deinen Geist")) {
         discoveredVerses.push("Reinige deinen Geist");
@@ -241,7 +248,7 @@
       }
       showWohnzimmer();
     }
-    // Radio – Mehrstufige Optionen (enthüllt Vers 4)
+    // Wohnzimmer – Radio (Mehrstufige Optionen, enthüllt Vers 4)
     function showRadio() {
       let narrative = `
         <h2>Wohnzimmer – Radio</h2>
@@ -259,7 +266,7 @@
       let narrative = `
         <h2>Wohnzimmer – Radio (Leises Zuhören)</h2>
         <img src="wohnzimmer.jpg" alt="Radio leise">
-        <p>Du hörst leise, und eine mystische Stimme verkündet: Empfange die Erleuchtung.</p>
+        <p>Eine mystische Stimme flüstert: "Empfange die Erleuchtung".</p>
       `;
       if (!discoveredVerses.includes("Empfange die Erleuchtung")) {
         discoveredVerses.push("Empfange die Erleuchtung");
@@ -276,7 +283,7 @@
       let narrative = `
         <h2>Küche</h2>
         <img src="kueche.jpg" alt="Küche">
-        <p>Die alte Küche birgt viele Geheimnisse: Hier kannst du die Schubladen eines Schranks öffnen oder das Schneidebrett mit Auberginen untersuchen.</p>
+        <p>Die alte Küche birgt viele Geheimnisse: Hier kannst du die Schubladen eines Schranks öffnen oder das Schneidebrett mit Auberginen genauer untersuchen.</p>
       `;
       let options = [
         { text: "Öffne die Schubladen", action: kuecheOpenDrawer },
@@ -290,7 +297,7 @@
       let narrative = `
         <h2>Küche – Schubladen</h2>
         <img src="kueche.jpg" alt="Küchenschubladen">
-        <p>Beim Öffnen der alten Schubladen entdeckst du ein rituelles Einlaufset, das zur Reinigung nötig ist.</p>
+        <p>Beim Öffnen der alten Schubladen entdeckst du ein rituelles Einlaufset, das zur Reinigung benötigt wird.</p>
       `;
       let options = [
         { text: "Nimm das Einlaufset mit", action: () => { 
@@ -303,7 +310,7 @@
       ];
       displayScene(narrative, options);
     }
-    // Küche – Schneidebrett – Mehrstufige Untersuchung (Auberginen)
+    // Küche – Schneidebrett (Mehrstufige Untersuchung der Auberginen)
     function kuecheInspectChoppingBoard() {
       let narrative = `
         <h2>Küche – Schneidebrett</h2>
@@ -358,7 +365,7 @@
       showKueche();
     }
 
-    // Badezimmer – Enthält Altar und rituelle Optionen
+    // Badezimmer – Enthält Altar und rituelle Optionen (ohne Klo-Perspektive)
     function showBadezimmer() {
       gameState.currentRoom = "badezimmer";
       let narrative = `
@@ -372,7 +379,6 @@
           ? { text: "Führe den rituellen Einlauf ein", action: showBadezimmerEinlauf }
           : { text: "Führe den rituellen Einlauf ein – (Einlaufset fehlt oder bereits genutzt)", action: () => { alert("Du kannst den Einlauf nicht erneut durchführen."); showBadezimmer(); } },
         { text: "Starte das Toiletten‑Gebet", action: startToilettenGebet },
-        { text: "Zeige Klo-Perspektive", action: showKloPerspektive },
         { text: "Zurück in den Hauptflur", action: showFlur }
       ];
       displayScene(narrative, options);
@@ -421,20 +427,7 @@
       }
     }
 
-    // Neue Funktion: Perspektive vom Klo
-    function showKloPerspektive() {
-      let narrative = `
-        <h2>Perspektive vom Klo</h2>
-        <img src="perspektive_klo.jpg" alt="Perspektive vom Klo">
-        <p>Aus der Sicht eines Sitzenden auf der antiken Toilette siehst du rechts einen kleinen, alten Altar mit der heiligen Aubergine und vor dir das rituelle Einlaufset auf dem Boden.</p>
-      `;
-      let options = [
-        { text: "Zurück ins Badezimmer", action: showBadezimmer }
-      ];
-      displayScene(narrative, options);
-    }
-
-    // Toiletten‑Gebet starten – Voraussetzungen: Einlauf eingeführt and Aubergine am Altar
+    // Toiletten‑Gebet starten – Voraussetzungen: Einlauf eingeführt und Aubergine am Altar
     function startToilettenGebet() {
       if (!gameState.einlaufUsed || !gameState.auberginePlaced) {
         alert("Du bist noch nicht bereit für das Toiletten‑Gebet – es fehlen wichtige Utensilien.");
@@ -452,9 +445,12 @@
         </ol>
         <p>Ordne die Fragmente in die richtige Reihenfolge.</p>
       `;
-      displayPrayerOptions(narrative);
+      // Reset prayer sequence bei Start
+      gameState.prayerSequence = [];
+      displayPrayerOptionsCustom(narrative);
     }
-    function displayPrayerOptions(narrative) {
+    // Angepasste Funktion für das Toiletten‑Gebet-Minigame, die die Auswahl beibehält
+    function displayPrayerOptionsCustom(narrative) {
       let currentSelection = gameState.prayerSequence.join(" | ");
       let narrativeWithStatus = narrative + `<p><strong>Auswahl bisher:</strong> ${currentSelection}</p>`;
       const fragments = [
@@ -464,13 +460,13 @@
         "Empfange die Erleuchtung"
       ];
       const options = fragments.map(frag => {
-        return { text: frag, action: () => addPrayerFragment(frag) };
+        return { text: frag, action: () => addPrayerFragmentCustom(frag, narrative) };
       });
-      options.push({ text: "Reset Gebetsfolge", action: resetPrayer });
+      options.push({ text: "Reset Gebetsfolge", action: () => { gameState.prayerSequence = []; displayPrayerOptionsCustom(narrative); } });
       options.push({ text: "Abbrechen – zurück in den Hauptflur", action: () => { gameState.prayerSequence = []; showFlur(); } });
       displayScene(narrativeWithStatus, options);
     }
-    function addPrayerFragment(fragment) {
+    function addPrayerFragmentCustom(fragment, narrative) {
       if (gameState.prayerSequence.includes(fragment)) {
         alert("Dieses Fragment hast du bereits gewählt.");
         return;
@@ -485,40 +481,79 @@
           }
         }
         if (correct) {
-          alert("Das Toiletten‑Gebet wurde korrekt rezitiert!");
-          gameState.keyFound = true;
-          displayScene(`
-            <h2>Badezimmer</h2>
-            <img src="badezimmer.jpg" alt="Badezimmer">
-            <p>Die Toilette leuchtet sanft und offenbart einen schimmernden Schlüssel, der direkt daneben liegt!</p>
-          `, [
-            { text: "Hebe den Schlüssel auf und gehe zurück in den Hauptflur", action: showFlur }
-          ]);
+          showPrayerSuccess();
         } else {
           gameOver("Die Toilette erstrahlt in dunklem, auberginenfarbenem Licht und saugt dich qualvoll hinein!");
         }
       } else {
-        showBadezimmer();
+         displayPrayerOptionsCustom(narrative);
       }
     }
-    function resetPrayer() {
-      gameState.prayerSequence = [];
-      showBadezimmer();
+    // Erfolgreiches Gebet – humorvolle Beschreibung, Schlüssel erhalten und Übergang zur Schlüssel-Seite
+    function showPrayerSuccess() {
+      gameState.keyFound = true; // Schlüssel wird nun erhalten
+      let narrative = `
+        <h2>Erfolgreiches Toiletten‑Gebet</h2>
+        <p>Du rezitierst das Gebet: "Reinige deinen Geist, Öffne dein Herz, Erhebe deinen Körper, Empfange die Erleuchtung".<br>
+           Mit jedem Wort entleerst du deinen Darm auf eine amüsant prächtige Weise – ein ekstatischer Moment der Erleichterung und Reinigung.</p>
+      `;
+      displayScene(narrative, [
+        { text: "Weiter", action: showSchluesselPage }
+      ]);
+    }
+    // Schlüssel-Seite – Bild und Hinweis, dass der Schlüssel erschienen ist
+    function showSchluesselPage() {
+      let narrative = `
+        <h2>Schlüssel Erscheint</h2>
+        <img src="schluessel.jpg" alt="Schlüssel">
+        <p>Durch dein erfolgreiches Gebet hat sich ein schimmernder Schlüssel materialisiert – als hätte deine Erleuchtung das Unmögliche möglich gemacht.</p>
+      `;
+      displayScene(narrative, [
+        { text: "Zurück in den Hauptflur", action: showFlur }
+      ]);
     }
 
-    // Haustür im Flur – betritt die Wohnung (Schlüssel vorhanden)
+    // Haustür im Flur – Mit Schlüssel erhält der Spieler freien Durchgang, der jetzt zu weiteren Erinnerungsseiten führt.
     function showDoorExit() {
-      // Mit Schlüssel kann der Spieler die Wohnung verlassen
-      showFlussHamme();
+      // Nach erfolgreichem Gebet und Schlüssel-Erhalt startet die Erinnerung.
+      showMemoryRecall1();
     }
-    // Fluss Hamme – Das große Ritual draußen
+    // Erinnerung: Mehrere Seiten, in denen dein Gedächtnis zurückkehrt
+    function showMemoryRecall1() {
+      let narrative = `
+        <h2>Erinnerung kehrt zurück – Teil 1</h2>
+        <p>Du trittst durch die Haustür, die nun offen steht, und spürst den warmen Hauch der Freiheit. Langsam kehren Erinnerungen zurück: Du erinnerst dich, wie du dich auf diesen Tag vorbereitet hast, um die Verstopfung zu erreichen.</p>
+      `;
+      displayScene(narrative, [
+        { text: "Weiter", action: showMemoryRecall2 }
+      ]);
+    }
+    function showMemoryRecall2() {
+      let narrative = `
+        <h2>Erinnerung kehrt zurück – Teil 2</h2>
+        <p>Stück für Stück fließen Erinnerungen in deinen Geist: die geheimen Rituale, die Fastenzeiten und die Speisen, die dich in diesen Zustand der Verstopfung geführt haben.</p>
+      `;
+      displayScene(narrative, [
+        { text: "Weiter", action: showMemoryRecall3 }
+      ]);
+    }
+    function showMemoryRecall3() {
+      let narrative = `
+        <h2>Erinnerung kehrt zurück – Teil 3</h2>
+        <p>Mit jedem Schritt kehrt dein Gedächtnis zurück: Du erinnerst dich, wie sorgfältig du diesen Zustand geplant hast, um das Gebet und das Ritual zu meistern.</p>
+      `;
+      displayScene(narrative, [
+        { text: "Weiter", action: showFlussHamme }
+      ]);
+    }
+    
+    // Fluss Hamme – Das große Ritual draußen (Finale Seite)
     function showFlussHamme() {
       gameState.currentRoom = "fluss";
       let narrative = `
-        <h2>Fluss Hamme</h2>
+        <h2>Fluss Hamme – Das große Ritual</h2>
         <img src="fluss_hamme.jpg" alt="Fluss Hamme">
-        <p>Du trittst ins Freie und erreichst den Fluss Hamme. Dort versammeln sich die Anhänger der Ober-Gine, um in einem ekstatischen Ritual gemeinsam Erleuchtung zu finden – symbolisch in den Fluss eintauchend.</p>
-        <p>Mit diesem Akt kehrt auch dein Gedächtnis zurück.</p>
+        <p>Du trittst ins Freie und erreichst den Fluss Hamme. Dort versammeln sich die Anhänger der Ober‑Gine, um in einem ekstatischen Ritual gemeinsam Erleuchtung zu finden – schließlich kackt ihr alle fröhlich zusammen in die Hamme, ein feierlicher Akt der Gemeinschaft und Erneuerung.</p>
       `;
       displayScene(narrative, [
         { text: "Spiel beenden (Neustart)", action: () => location.reload() }
